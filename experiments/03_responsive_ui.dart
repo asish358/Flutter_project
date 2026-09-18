@@ -25,6 +25,7 @@ class ResponsiveProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Read the current screen width using MediaQuery.
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= desktopBreakpoint;
     final isTablet = width >= tabletBreakpoint;
@@ -36,6 +37,7 @@ class ResponsiveProfilePage extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 1100),
           child: Padding(
             padding: EdgeInsets.all(isTablet ? 32 : 16),
+            // Desktop uses two columns; smaller screens use a scrollable list.
             child: isDesktop
                 ? Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
