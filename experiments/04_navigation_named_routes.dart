@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(const StudentProfileApp());
 
+// Centralized route names keep navigation easy to maintain.
 class AppRoutes {
   static const profile = '/';
   static const details = '/details';
@@ -73,6 +74,8 @@ class DetailsScreen extends StatelessWidget {
             Text('Course: Computer Science'),
             Text('Year: 3rd Year'),
             Text('Attendance: 88%'),
+            SizedBox(height: 24),
+            Text('Use the AppBar back button to return to the profile screen.'),
           ],
         ),
       ),
