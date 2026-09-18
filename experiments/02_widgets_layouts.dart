@@ -16,9 +16,11 @@ class StudentProfileApp extends StatelessWidget {
         appBar: AppBar(title: const Text('Student Profile')),
         body: Padding(
           padding: const EdgeInsets.all(16),
+          // Column arranges the main profile sections vertically.
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Stack places the profile avatar over the banner.
               Stack(
                 alignment: Alignment.bottomRight,
                 children: [
@@ -47,6 +49,7 @@ class StudentProfileApp extends StatelessWidget {
               const SizedBox(height: 8),
               const Text('Flutter Developer | Computer Science Student'),
               const SizedBox(height: 20),
+              // Row displays the student statistics horizontally.
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: const [
