@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(const StudentProfileApp());
 
+class AppRoutes {
+  static const profile = '/';
+  static const details = '/details';
+  static const skills = '/skills';
+}
+
 class StudentProfileApp extends StatelessWidget {
   const StudentProfileApp({super.key});
 
@@ -9,11 +15,11 @@ class StudentProfileApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Student Profile',
-      initialRoute: '/',
+      initialRoute: AppRoutes.profile,
       routes: {
-        '/': (context) => const ProfileScreen(),
-        '/details': (context) => const DetailsScreen(),
-        '/skills': (context) => const SkillsScreen(),
+        AppRoutes.profile: (context) => const ProfileScreen(),
+        AppRoutes.details: (context) => const DetailsScreen(),
+        AppRoutes.skills: (context) => const SkillsScreen(),
       },
     );
   }
@@ -36,11 +42,11 @@ class ProfileScreen extends StatelessWidget {
             const Text('Flutter Developer'),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/details'),
+              onPressed: () => Navigator.pushNamed(context, AppRoutes.details),
               child: const Text('View Details'),
             ),
             OutlinedButton(
-              onPressed: () => Navigator.pushNamed(context, '/skills'),
+              onPressed: () => Navigator.pushNamed(context, AppRoutes.skills),
               child: const Text('View Skills'),
             ),
           ],
