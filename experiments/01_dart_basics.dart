@@ -15,13 +15,16 @@ void main() {
   print('CGPA: $cgpa');
   print('Active: $isActive');
 
-  // Basic arithmetic and conditional statement.
+  // Basic arithmetic operations.
   int marks1 = 85;
   int marks2 = 90;
   int total = marks1 + marks2;
+  double average = total / 2;
 
   print('Total Marks: $total');
+  print('Average Marks: $average');
 
+  // Basic conditional statement.
   if (total >= 150) {
     print('Result: Excellent');
   } else {
