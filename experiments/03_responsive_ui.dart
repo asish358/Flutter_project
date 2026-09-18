@@ -20,11 +20,14 @@ class StudentProfileApp extends StatelessWidget {
 class ResponsiveProfilePage extends StatelessWidget {
   const ResponsiveProfilePage({super.key});
 
+  static const double tabletBreakpoint = 600;
+  static const double desktopBreakpoint = 900;
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= 900;
-    final isTablet = width >= 600;
+    final isDesktop = width >= desktopBreakpoint;
+    final isTablet = width >= tabletBreakpoint;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Student Profile')),
@@ -95,7 +98,7 @@ class _DetailsCard extends StatelessWidget {
           children: const [
             Text('Academic Details', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 14),
-            ListTile(leading: Icon(Icons.school), title: Text('CGPA'), trailing: Text('8.5')), 
+            ListTile(leading: Icon(Icons.school), title: Text('CGPA'), trailing: Text('8.5')),
             ListTile(leading: Icon(Icons.event_available), title: Text('Attendance'), trailing: Text('92%')),
             ListTile(leading: Icon(Icons.code), title: Text('Skills'), trailing: Text('Flutter, Dart')),
           ],
