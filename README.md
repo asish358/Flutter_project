@@ -28,3 +28,24 @@ Uses **MediaQuery** with tablet and desktop breakpoints to adapt the profile lay
 
 ### Experiment 4 — Navigation and Named Routes
 Demonstrates Flutter navigation using **Navigator.pushNamed()**, centralized route names and multiple screens.
+
+## Experiment Files
+
+```text
+experiments/
+├── 01_dart_basics.dart
+├── 02_widgets_layouts.dart
+├── 03_responsive_ui.dart
+└── 04_navigation_named_routes.dart
+```
+
+## How to Run
+
+1. Install the Flutter SDK and verify it with `flutter doctor`.
+2. Create or open a Flutter project.
+3. Copy the required experiment code into `lib/main.dart`.
+4. Run the app using `flutter run`.
+
+## Current Progress
+
+Experiments **1–4 are complete**. Experiments **5–10 are intentionally not started yet** and will be added in future updates.
