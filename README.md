@@ -6,7 +6,7 @@ The Student Profile App is a cross-platform mobile application developed using *
 
 The app uses Flutter's modern UI framework to deliver a responsive and consistent user experience on both Android and iOS devices from a single codebase. A backend database, such as Firebase or another cloud service, can securely store student data and provide real-time synchronization and authentication. Faculty and administrators can access authorized student information, verify records, and monitor academic progress through role-based access control.
 
-## Experiments 1–4
+## Experiments 1–5
 
 ### Experiment 1 — Dart Basics
 Variables, data types, arithmetic operations, string interpolation and conditional statements.
@@ -36,6 +36,13 @@ Uses **Navigator.pushNamed()**, named route constants and multiple screens for p
 
 ![Experiment 4 Output](outputs/exp4_output.svg)
 
+### Experiment 5 — Stateful & Stateless Widgets + State Management
+Demonstrates **StatelessWidget**, **StatefulWidget**, **setState()**, and **Provider** using ChangeNotifier and notifyListeners() for counter state management.
+
+**Output:**
+
+![Experiment 5 Output](outputs/exp5_output.svg)
+
 ## Experiment Files
 
 ```text
@@ -43,5 +50,8 @@ experiments/
 ├── 01_dart_basics.dart
 ├── 02_widgets_layouts.dart
 ├── 03_responsive_ui.dart
-└── 04_navigation_named_routes.dart
+├── 04_navigation_named_routes.dart
+├── 05_setstate_counter.dart
+├── 05_state_management.dart
+└── counter_provider.dart
 ```
