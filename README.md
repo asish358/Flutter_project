@@ -6,28 +6,35 @@ The Student Profile App is a cross-platform mobile application developed using *
 
 The app uses Flutter's modern UI framework to deliver a responsive and consistent user experience on both Android and iOS devices from a single codebase. A backend database, such as Firebase or another cloud service, can securely store student data and provide real-time synchronization and authentication. Faculty and administrators can access authorized student information, verify records, and monitor academic progress through role-based access control.
 
-The Student Profile App reduces paperwork, minimizes manual data entry, and improves the accuracy and accessibility of student records. By leveraging Flutter's high performance, cross-platform compatibility, and scalable architecture, the application offers a reliable and cost-effective solution for educational institutions.
-
-## Experiments Completed
-
-| Experiment | Topic | Status |
-| --- | --- | --- |
-| 1 | Flutter/Dart setup and Dart language basics | ✅ Completed |
-| 2 | Flutter widgets with Row, Column and Stack layouts | ✅ Completed |
-| 3 | Responsive UI using MediaQuery and breakpoints | ✅ Completed |
-| 4 | Navigator navigation and named routes | ✅ Completed |
+## Experiments 1–4
 
 ### Experiment 1 — Dart Basics
-Introduces Dart variables, data types, arithmetic operations, string interpolation and conditional statements.
+Variables, data types, arithmetic operations, string interpolation and conditional statements.
+
+**Output:**
+
+![Experiment 1 Output](outputs/exp1_output.svg)
 
 ### Experiment 2 — Flutter Widgets and Layouts
-Builds a simple student profile UI using common Flutter widgets and demonstrates **Row**, **Column** and **Stack**.
+Uses Flutter widgets with **Row**, **Column** and **Stack** to build a student profile interface.
+
+**Output:**
+
+![Experiment 2 Output](outputs/exp2_output.svg)
 
 ### Experiment 3 — Responsive UI
-Uses **MediaQuery** with tablet and desktop breakpoints to adapt the profile layout for different screen sizes.
+Uses **MediaQuery** and tablet/desktop breakpoints to adapt the profile layout to different screen sizes.
+
+**Output:**
+
+![Experiment 3 Output](outputs/exp3_output.svg)
 
 ### Experiment 4 — Navigation and Named Routes
-Demonstrates Flutter navigation using **Navigator.pushNamed()**, centralized route names and multiple screens.
+Uses **Navigator.pushNamed()**, named route constants and multiple screens for profile navigation.
+
+**Output:**
+
+![Experiment 4 Output](outputs/exp4_output.svg)
 
 ## Experiment Files
 
@@ -38,14 +45,3 @@ experiments/
 ├── 03_responsive_ui.dart
 └── 04_navigation_named_routes.dart
 ```
-
-## How to Run
-
-1. Install the Flutter SDK and verify it with `flutter doctor`.
-2. Create or open a Flutter project.
-3. Copy the required experiment code into `lib/main.dart`.
-4. Run the app using `flutter run`.
-
-## Current Progress
-
-Experiments **1–4 are complete**. Experiments **5–10 are intentionally not started yet** and will be added in future updates.
