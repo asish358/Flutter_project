@@ -1,6 +1,9 @@
 // Experiment 1(b): Simple Dart program to understand language basics.
+// Covers variables, primitive data types, arithmetic, string interpolation,
+// and a basic if/else decision.
 
 void main() {
+  // Dart variable examples.
   String studentName = 'Student';
   int age = 20;
   double cgpa = 8.5;
