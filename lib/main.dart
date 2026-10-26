@@ -24,6 +24,12 @@ class StudentProfileApp extends StatelessWidget {
           ),
         ),
         home: const HomeScreen(),
+        routes: {
+          '/responsive': (_) => const ResponsiveScreen(),
+          '/state': (_) => const StateScreen(),
+          '/form': (_) => const StudentFormScreen(),
+          '/animation': (_) => const AnimationScreen(),
+        },
       );
 }
 
