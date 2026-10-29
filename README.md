@@ -80,7 +80,7 @@ Writes widget tests for reusable UI components and student-form validation, and 
 
 ![Experiment 10 Output](outputs/exp10_output.svg)
 
-**Run the example:** `flutter run experiments/10_testing_debugging.dart` (or open the file in your Flutter project and run it as the entry point).
+**Run the example:** `flutter run -t experiments/10_testing_debugging.dart` (or open the file in your Flutter project and run it as the entry point).
 
 ## Experiment Files
 
