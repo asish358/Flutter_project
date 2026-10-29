@@ -6,7 +6,7 @@ The Student Profile App is a cross-platform mobile application developed using *
 
 The app uses Flutter's modern UI framework to deliver a responsive and consistent user experience on both Android and iOS devices from a single codebase. A backend database, such as Firebase or another cloud service, can securely store student data and provide real-time synchronization and authentication. Faculty and administrators can access authorized student information, verify records, and monitor academic progress through role-based access control.
 
-## Experiments 1–9
+## Experiments 1–10
 
 ### Experiment 1 — Dart Basics
 Variables, data types, arithmetic operations, string interpolation and conditional statements.
@@ -73,6 +73,15 @@ Fetches album data from the public **JSONPlaceholder REST API** using an HTTP GE
 
 **Dependency:** Run `flutter pub add http` in a Flutter project before running this experiment.
 
+### Experiment 10 — Testing and Debugging in Flutter
+Writes widget tests for reusable UI components and student-form validation, and demonstrates Flutter debugging tools including Flutter Inspector, DevTools, IDE breakpoints, console logging, and common verification commands. Automated UI tests are maintained in `test/exp10_testing_debugging_test.dart`.
+
+**Output:**
+
+![Experiment 10 Output](outputs/exp10_output.svg)
+
+**Run the example:** `flutter run experiments/10_testing_debugging.dart` (or open the file in your Flutter project and run it as the entry point).
+
 ## Experiment Files
 
 ```text
@@ -86,5 +95,18 @@ experiments/
 ├── 06_custom_widgets_themes.dart
 ├── 07_forms_validation.dart
 ├── 08_animations.dart
+├── 09_rest_api.dart
+├── 10_testing_debugging.dart
 └── counter_provider.dart
 ```
+
+## Automated UI Tests
+
+Run the widget tests with:
+
+```bash
+flutter test
+flutter analyze
+```
+
+The Experiment 10 tests verify the reusable profile header, student-form validation messages, and navigation to the testing/debugging screen. GitHub Actions runs dependency resolution, static analysis, and widget tests on pushes to `main`, pull requests, and manual workflow dispatches.
