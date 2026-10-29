@@ -26,7 +26,7 @@ class StudentProfileApp extends StatelessWidget {
             bodyLarge: TextStyle(fontSize: 16),
           ),
         ),
-        home: const HomeScreen(),
+        home: const StudentDashboard(),
         routes: {
           '/responsive': (_) => const ResponsiveScreen(),
           '/state': (_) => const StateScreen(),
@@ -561,4 +561,413 @@ class TestingDebuggingScreen extends StatelessWidget {
       ],
     ),
   );
+}
+
+
+/// Responsive student dashboard used as the Flutter Web landing page.
+class StudentDashboard extends StatefulWidget {
+  const StudentDashboard({super.key});
+
+  @override
+  State<StudentDashboard> createState() => _StudentDashboardState();
+}
+
+class _StudentDashboardState extends State<StudentDashboard> {
+  final ScrollController _scrollController = ScrollController();
+  final Map<String, GlobalKey> _sectionKeys = {
+    'Overview': GlobalKey(),
+    'Education': GlobalKey(),
+    'Skills': GlobalKey(),
+    'Projects': GlobalKey(),
+    'Achievements': GlobalKey(),
+    'Contact': GlobalKey(),
+    'Experiments': GlobalKey(),
+  };
+
+  void _goTo(String section) {
+    final context = _sectionKeys[section]?.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(context, duration: const Duration(milliseconds: 450), curve: Curves.easeInOut, alignment: 0.04);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final wide = MediaQuery.sizeOf(context).width >= 900;
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FB),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        title: const Row(
+          children: [
+            Icon(Icons.school_rounded, color: Color(0xFF4057B2)),
+            SizedBox(width: 10),
+            Text('Student Profile App', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
+          ],
+        ),
+        actions: [
+          if (wide)
+            Padding(
+              padding: const EdgeInsets.only(right: 24),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  decoration: BoxDecoration(color: const Color(0xFFE8F7EE), borderRadius: BorderRadius.circular(30)),
+                  child: const Text('Student Portfolio', style: TextStyle(color: Color(0xFF247044), fontWeight: FontWeight.w600, fontSize: 12)),
+                ),
+              ),
+            ),
+        ],
+      ),
+      body: LayoutBuilder(builder: (context, constraints) {
+        final maxWidth = constraints.maxWidth >= 1200 ? 1120.0 : 920.0;
+        return Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: maxWidth),
+            child: ListView(
+              controller: _scrollController,
+              padding: EdgeInsets.symmetric(horizontal: wide ? 28 : 16, vertical: 24),
+              children: [
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: _sectionKeys.keys.map((section) => ActionChip(
+                    label: Text(section),
+                    avatar: Icon(_sectionIcon(section), size: 17),
+                    onPressed: () => _goTo(section),
+                    backgroundColor: Colors.white,
+                    side: const BorderSide(color: Color(0xFFE1E6F0)),
+                  )).toList(),
+                ),
+                const SizedBox(height: 22),
+                Container(
+                  key: _sectionKeys['Overview'],
+                  padding: EdgeInsets.all(wide ? 30 : 22),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(colors: [Color(0xFF263B83), Color(0xFF536BD1)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: wide
+                    ? Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                        _avatar(82),
+                        const SizedBox(width: 24),
+                        const Expanded(child: _HeroCopy()),
+                        const SizedBox(width: 18),
+                        const _AvailabilityTag(),
+                      ])
+                    : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        _avatar(72),
+                        const SizedBox(height: 18),
+                        const _HeroCopy(),
+                        const SizedBox(height: 18),
+                        const _AvailabilityTag(),
+                      ]),
+                ),
+                const SizedBox(height: 18),
+                GridView.count(
+                  crossAxisCount: wide ? 4 : constraints.maxWidth >= 520 ? 2 : 1,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: wide ? 1.8 : constraints.maxWidth >= 520 ? 2.1 : 3.4,
+                  children: const [
+                    _StatCard(icon: Icons.school_outlined, label: 'Degree', value: 'B.Tech CSE'),
+                    _StatCard(icon: Icons.grade_outlined, label: 'CGPA', value: '9.2'),
+                    _StatCard(icon: Icons.code_rounded, label: 'Focus', value: 'Development'),
+                    _StatCard(icon: Icons.location_on_outlined, label: 'Location', value: 'Hyderabad'),
+                  ],
+                ),
+                const SizedBox(height: 28),
+                _sectionTitle('Education', 'Academic background', Icons.school_outlined, _sectionKeys['Education']),
+                const SizedBox(height: 12),
+                _panel(child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('B.Tech — Computer Science and Engineering', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+                  SizedBox(height: 7),
+                  Text('Ace Engineering College · Hyderabad, Telangana', style: TextStyle(color: Color(0xFF5F6B80))),
+                  SizedBox(height: 12),
+                  Wrap(spacing: 8, runSpacing: 8, children: [
+                    _Pill(text: 'CGPA: 9.2'),
+                    _Pill(text: 'Undergraduate'),
+                    _Pill(text: 'Expected graduation: 2028'),
+                  ]),
+                ])),
+                const SizedBox(height: 28),
+                _sectionTitle('Skills', 'Tools I am learning and using', Icons.build_outlined, _sectionKeys['Skills']),
+                const SizedBox(height: 12),
+                _panel(child: Wrap(spacing: 10, runSpacing: 10, children: const [
+                  _SkillChip(label: 'Python', icon: Icons.code),
+                  _SkillChip(label: 'Java', icon: Icons.coffee_outlined),
+                  _SkillChip(label: 'C', icon: Icons.terminal),
+                  _SkillChip(label: 'Dart', icon: Icons.flutter_dash),
+                  _SkillChip(label: 'Flutter', icon: Icons.phone_android),
+                  _SkillChip(label: 'DSA', icon: Icons.account_tree_outlined),
+                  _SkillChip(label: 'REST APIs', icon: Icons.cloud_outlined),
+                  _SkillChip(label: 'Git & GitHub', icon: Icons.commit),
+                ])),
+                const SizedBox(height: 28),
+                _sectionTitle('Projects', 'Things I have worked on', Icons.folder_open_outlined, _sectionKeys['Projects']),
+                const SizedBox(height: 12),
+                LayoutBuilder(builder: (context, box) {
+                  final columns = box.maxWidth >= 700 ? 2 : 1;
+                  return GridView.count(
+                    crossAxisCount: columns,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: columns == 2 ? 1.5 : 2.0,
+                    children: [
+                      _ProjectCard(
+                        icon: Icons.person_outline_rounded,
+                        title: 'Student Profile App',
+                        description: 'A responsive Flutter app demonstrating reusable widgets, forms, state management, animations and API integration.',
+                        tags: const ['Flutter', 'Dart', 'Provider'],
+                        onTap: () => _goTo('Experiments'),
+                      ),
+                      _ProjectCard(
+                        icon: Icons.school_outlined,
+                        title: 'Student Grade Tracker',
+                        description: 'A programming project focused on recording student marks and presenting grade information.',
+                        tags: const ['Python', 'Logic', 'GitHub'],
+                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Add your project demo URL here when ready.'))),
+                      ),
+                    ],
+                  );
+                }),
+                const SizedBox(height: 28),
+                _sectionTitle('Achievements', 'Progress worth highlighting', Icons.emoji_events_outlined, _sectionKeys['Achievements']),
+                const SizedBox(height: 12),
+                _panel(child: const Column(children: [
+                  _AchievementRow(icon: Icons.menu_book_outlined, title: 'Consistent learning', subtitle: 'Practising programming and core computer science concepts.'),
+                  Divider(height: 24),
+                  _AchievementRow(icon: Icons.verified_outlined, title: 'NPTEL course', subtitle: 'Completed an NPTEL course.'),
+                  Divider(height: 24),
+                  _AchievementRow(icon: Icons.code_rounded, title: 'Coding practice', subtitle: 'Building problem-solving skills through coding exercises.'),
+                ])),
+                const SizedBox(height: 28),
+                _sectionTitle('Contact', 'Let’s connect', Icons.mail_outline, _sectionKeys['Contact']),
+                const SizedBox(height: 12),
+                _panel(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const Text('Interested in internships, projects and learning opportunities.', style: TextStyle(fontSize: 15, height: 1.5)),
+                  const SizedBox(height: 14),
+                  Wrap(spacing: 10, runSpacing: 10, children: [
+                    OutlinedButton.icon(
+                      onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Replace this with your preferred contact email.'))),
+                      icon: const Icon(Icons.email_outlined),
+                      label: const Text('Email'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Add your GitHub profile URL to this button.'))),
+                      icon: const Icon(Icons.code),
+                      label: const Text('GitHub'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Add your LinkedIn profile URL to this button.'))),
+                      icon: const Icon(Icons.work_outline),
+                      label: const Text('LinkedIn'),
+                    ),
+                  ]),
+                ])),
+                const SizedBox(height: 28),
+                _sectionTitle('Experiments', 'Flutter learning lab · 1–10', Icons.science_outlined, _sectionKeys['Experiments']),
+                const SizedBox(height: 12),
+                ...HomeScreen.items.map((item) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Card(
+                    color: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: const BorderSide(color: Color(0xFFE5E9F2))),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      leading: CircleAvatar(backgroundColor: const Color(0xFFEEF1FF), child: Icon(item.icon, color: const Color(0xFF4057B2))),
+                      title: Text(item.title, style: const TextStyle(fontWeight: FontWeight.w700)),
+                      subtitle: Text(item.subtitle),
+                      trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => item.page)),
+                    ),
+                  ),
+                )),
+                const SizedBox(height: 20),
+                const Center(child: Padding(
+                  padding: EdgeInsets.only(bottom: 12),
+                  child: Text('Built with Flutter · Student Profile App', style: TextStyle(color: Color(0xFF7B8496), fontSize: 12)),
+                )),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  IconData _sectionIcon(String section) {
+    switch (section) {
+      case 'Overview': return Icons.home_outlined;
+      case 'Education': return Icons.school_outlined;
+      case 'Skills': return Icons.build_outlined;
+      case 'Projects': return Icons.folder_open_outlined;
+      case 'Achievements': return Icons.emoji_events_outlined;
+      case 'Contact': return Icons.mail_outline;
+      default: return Icons.science_outlined;
+    }
+  }
+
+  Widget _avatar(double radius) => CircleAvatar(
+    radius: radius / 2,
+    backgroundColor: Colors.white.withValues(alpha: 0.18),
+    child: Icon(Icons.person_rounded, size: radius * 0.56, color: Colors.white),
+  );
+
+  Widget _sectionTitle(String title, String subtitle, IconData icon, GlobalKey? key) => Padding(
+    key: key,
+    padding: const EdgeInsets.only(top: 2),
+    child: Row(children: [
+      Container(width: 42, height: 42, decoration: BoxDecoration(color: const Color(0xFFE9EDFF), borderRadius: BorderRadius.circular(13)), child: Icon(icon, color: const Color(0xFF4057B2))),
+      const SizedBox(width: 12),
+      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Color(0xFF1F2937))),
+        const SizedBox(height: 2),
+        Text(subtitle, style: const TextStyle(color: Color(0xFF6B7280), fontSize: 13)),
+      ])),
+    ]),
+  );
+
+  Widget _panel({required Widget child}) => Container(
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE5E9F2))),
+    child: child,
+  );
+}
+
+class _HeroCopy extends StatelessWidget {
+  const _HeroCopy();
+  @override
+  Widget build(BuildContext context) => const Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text('HELLO, I AM', style: TextStyle(color: Color(0xFFD8DFFF), letterSpacing: 1.7, fontSize: 11, fontWeight: FontWeight.w800)),
+      SizedBox(height: 8),
+      Text('G. Asish', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w800, height: 1.1)),
+      SizedBox(height: 8),
+      Text('Computer Science Engineering Student', style: TextStyle(color: Colors.white, fontSize: 15)),
+      SizedBox(height: 8),
+      Text('Learning, building and improving one project at a time.', style: TextStyle(color: Color(0xFFE0E6FF), fontSize: 13, height: 1.4)),
+    ],
+  );
+}
+
+class _AvailabilityTag extends StatelessWidget {
+  const _AvailabilityTag();
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(30), border: Border.all(color: Colors.white.withValues(alpha: 0.25))),
+    child: const Row(mainAxisSize: MainAxisSize.min, children: [
+      Icon(Icons.circle, size: 8, color: Color(0xFF8FE0B1)),
+      SizedBox(width: 8),
+      Text('Open to opportunities', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+    ]),
+  );
+}
+
+class _StatCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  const _StatCard({required this.icon, required this.label, required this.value});
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(15),
+    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE5E9F2))),
+    child: Row(children: [
+      Container(width: 38, height: 38, decoration: BoxDecoration(color: const Color(0xFFEEF1FF), borderRadius: BorderRadius.circular(12)), child: Icon(icon, color: const Color(0xFF4057B2), size: 20)),
+      const SizedBox(width: 10),
+      Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(label, style: const TextStyle(color: Color(0xFF7B8496), fontSize: 12)),
+        const SizedBox(height: 3),
+        Text(value, style: const TextStyle(color: Color(0xFF263248), fontWeight: FontWeight.w800, fontSize: 14)),
+      ])),
+    ]),
+  );
+}
+
+class _Pill extends StatelessWidget {
+  final String text;
+  const _Pill({required this.text});
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+    decoration: BoxDecoration(color: const Color(0xFFF0F3FF), borderRadius: BorderRadius.circular(30)),
+    child: Text(text, style: const TextStyle(color: Color(0xFF4057B2), fontSize: 12, fontWeight: FontWeight.w700)),
+  );
+}
+
+class _SkillChip extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  const _SkillChip({required this.label, required this.icon});
+  @override
+  Widget build(BuildContext context) => Chip(
+    avatar: Icon(icon, size: 17, color: const Color(0xFF4057B2)),
+    label: Text(label),
+    backgroundColor: const Color(0xFFF7F8FC),
+    side: const BorderSide(color: Color(0xFFE1E6F0)),
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+  );
+}
+
+class _ProjectCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+  final List<String> tags;
+  final VoidCallback onTap;
+  const _ProjectCard({required this.icon, required this.title, required this.description, required this.tags, required this.onTap});
+  @override
+  Widget build(BuildContext context) => InkWell(
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(18),
+    child: Container(
+      padding: const EdgeInsets.all(19),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE5E9F2))),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Container(width: 42, height: 42, decoration: BoxDecoration(color: const Color(0xFFE9EDFF), borderRadius: BorderRadius.circular(13)), child: Icon(icon, color: const Color(0xFF4057B2))),
+          const Spacer(),
+          const Icon(Icons.north_east_rounded, color: Color(0xFF8B95A7), size: 18),
+        ]),
+        const SizedBox(height: 14),
+        Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+        const SizedBox(height: 7),
+        Expanded(child: Text(description, style: const TextStyle(color: Color(0xFF667085), height: 1.4, fontSize: 13))),
+        const SizedBox(height: 10),
+        Wrap(spacing: 6, runSpacing: 6, children: tags.map((tag) => _Pill(text: tag)).toList()),
+      ]),
+    ),
+  );
+}
+
+class _AchievementRow extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  const _AchievementRow({required this.icon, required this.title, required this.subtitle});
+  @override
+  Widget build(BuildContext context) => Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Container(width: 38, height: 38, decoration: BoxDecoration(color: const Color(0xFFE9EDFF), borderRadius: BorderRadius.circular(12)), child: Icon(icon, color: const Color(0xFF4057B2), size: 20)),
+    const SizedBox(width: 12),
+    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+      const SizedBox(height: 4),
+      Text(subtitle, style: const TextStyle(color: Color(0xFF667085), height: 1.4, fontSize: 13)),
+    ])),
+  ]);
 }
