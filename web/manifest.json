@@ -1,0 +1,9 @@
+{
+  "name": "Student Profile App",
+  "short_name": "Student Profile",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F5F7FB",
+  "theme_color": "#4057B2",
+  "description": "A responsive student profile dashboard built with Flutter."
+}
