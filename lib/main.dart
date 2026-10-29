@@ -822,7 +822,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
   Widget _avatar(double radius) => CircleAvatar(
     radius: radius / 2,
-    backgroundColor: Colors.white.withValues(alpha: 0.18),
+    backgroundColor: Colors.white.withOpacity(0.18),
     child: Icon(Icons.person_rounded, size: radius * 0.56, color: Colors.white),
   );
 
@@ -869,7 +869,7 @@ class _AvailabilityTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(30), border: Border.all(color: Colors.white.withValues(alpha: 0.25))),
+    decoration: BoxDecoration(color: Colors.white.withOpacity(0.14), borderRadius: BorderRadius.circular(30), border: Border.all(color: Colors.white.withOpacity(0.25))),
     child: const Row(mainAxisSize: MainAxisSize.min, children: [
       Icon(Icons.circle, size: 8, color: Color(0xFF8FE0B1)),
       SizedBox(width: 8),
