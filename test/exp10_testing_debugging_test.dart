@@ -51,7 +51,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Flutter Debugging Tools'), findsOneWidget);
-      expect(find.text('flutter analyze'), findsOneWidget);
+      final analyzeCommand = find.text('flutter analyze');
+      await tester.scrollUntilVisible(
+        analyzeCommand,
+        250,
+        scrollable: find.byType(Scrollable).last,
+      );
+      expect(analyzeCommand, findsOneWidget);
       expect(find.text('flutter test'), findsOneWidget);
     });
   });
