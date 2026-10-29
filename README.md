@@ -110,3 +110,52 @@ flutter analyze
 ```
 
 The Experiment 10 tests verify the reusable profile header, student-form validation messages, and navigation to the testing/debugging screen. GitHub Actions runs dependency resolution, static analysis, and widget tests on pushes to `main`, pull requests, and manual workflow dispatches.
+
+
+## Run the Student Profile App as a Website (Flutter Web)
+
+The default app screen is a responsive student dashboard with Overview, Education, Skills, Projects, Achievements, Contact, and the Experiment 1–10 learning lab.
+
+### Requirements
+- Flutter SDK (stable channel)
+- Chrome browser
+- VS Code or another editor (optional)
+
+### Run locally
+From the repository root:
+
+```bash
+flutter doctor
+flutter pub get
+flutter devices
+flutter run -d chrome
+```
+
+If Chrome is not listed, enable web support and retry:
+
+```bash
+flutter config --enable-web
+flutter devices
+flutter run -d chrome
+```
+
+To build a deployable website bundle:
+
+```bash
+flutter build web --release
+```
+
+The generated website files are placed in `build/web/`. Deploy that folder to a static hosting service.
+
+### Personalise before publishing
+- Update the student name, education and profile details in `StudentDashboard` in `lib/main.dart`.
+- Replace the Email, GitHub and LinkedIn button SnackBar callbacks with your actual contact links.
+- Add real demo/repository URLs to the project cards.
+- Review achievements and only publish details you want to share publicly.
+
+### Verify the project
+
+```bash
+flutter analyze
+flutter test
+```
