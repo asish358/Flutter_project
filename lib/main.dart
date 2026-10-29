@@ -57,6 +57,7 @@ class HomeScreen extends StatelessWidget {
     (title: 'Experiment 7 - Form Validation', subtitle: 'Student form with validation', icon: Icons.assignment, page: StudentFormScreen()),
     (title: 'Experiment 8 - Animations', subtitle: 'Fade and slide transitions', icon: Icons.animation, page: AnimationScreen()),
     (title: 'Experiment 9 - REST API', subtitle: 'Fetch and display JSON data', icon: Icons.cloud_download, page: RestApiScreen()),
+    (title: 'Experiment 10 - Testing & Debugging', subtitle: 'Widget tests and Flutter debugging tools', icon: Icons.bug_report, page: TestingDebuggingScreen()),
   ];
 
   @override
@@ -466,6 +467,98 @@ class _RestApiScreenState extends State<RestApiScreen> {
           ))),
         ]);
       },
+    ),
+  );
+}
+
+
+// Experiment 10: UI testing and Flutter debugging.
+class TestingDebuggingScreen extends StatelessWidget {
+  const TestingDebuggingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) => PageShell(
+    title: 'Experiment 10 - Testing & Debugging',
+    child: ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        const Text(
+          'Testing Flutter UI Components',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Widget tests verify what a user can see and do without manually tapping through every screen.',
+        ),
+        const SizedBox(height: 12),
+        const InfoTile(
+          label: 'Test 1: Profile header',
+          value: 'Verify the student name and course are displayed.',
+          icon: Icons.verified,
+        ),
+        const InfoTile(
+          label: 'Test 2: Form validation',
+          value: 'Submit an empty registration form and verify validation messages.',
+          icon: Icons.fact_check,
+        ),
+        const InfoTile(
+          label: 'Test 3: Navigation',
+          value: 'Verify that the Experiment 10 card opens this screen.',
+          icon: Icons.route,
+        ),
+        const Divider(height: 32),
+        const Text(
+          'Flutter Debugging Tools',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        const InfoTile(
+          label: 'Flutter Inspector',
+          value: 'Inspect the widget tree, layout constraints, padding, and alignment.',
+          icon: Icons.account_tree,
+        ),
+        const InfoTile(
+          label: 'DevTools / Performance view',
+          value: 'Inspect rebuilds, frame performance, memory, and runtime behavior.',
+          icon: Icons.speed,
+        ),
+        const InfoTile(
+          label: 'Breakpoints and debugger',
+          value: 'Pause execution and inspect variables and call stacks in the IDE.',
+          icon: Icons.pause_circle,
+        ),
+        const InfoTile(
+          label: 'Console and logging',
+          value: 'Use debugPrint() and exception details to locate the source of a problem.',
+          icon: Icons.terminal,
+        ),
+        const Divider(height: 32),
+        const Text(
+          'Commands used for verification',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        const InfoTile(
+          label: 'flutter analyze',
+          value: 'Finds static analysis and lint issues.',
+          icon: Icons.search,
+        ),
+        const InfoTile(
+          label: 'flutter test',
+          value: 'Runs unit and widget tests.',
+          icon: Icons.play_circle,
+        ),
+        const InfoTile(
+          label: 'flutter run --debug',
+          value: 'Runs the app in debug mode for interactive investigation.',
+          icon: Icons.bug_report,
+        ),
+        const SizedBox(height: 12),
+        const Text(
+          'Example issue and fix: if a widget test cannot find a card because it is outside the visible area, scroll the test viewport until the card is built and visible before asserting it exists.',
+          style: TextStyle(fontStyle: FontStyle.italic),
+        ),
+      ],
     ),
   );
 }
