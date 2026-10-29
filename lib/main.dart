@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 void main() {
@@ -29,6 +32,7 @@ class StudentProfileApp extends StatelessWidget {
           '/state': (_) => const StateScreen(),
           '/form': (_) => const StudentFormScreen(),
           '/animation': (_) => const AnimationScreen(),
+          '/api': (_) => const RestApiScreen(),
         },
       );
 }
@@ -52,6 +56,7 @@ class HomeScreen extends StatelessWidget {
     (title: 'Experiment 6 - Custom Widgets & Themes', subtitle: 'Reusable widgets and app styling', icon: Icons.palette, page: CustomWidgetsScreen()),
     (title: 'Experiment 7 - Form Validation', subtitle: 'Student form with validation', icon: Icons.assignment, page: StudentFormScreen()),
     (title: 'Experiment 8 - Animations', subtitle: 'Fade and slide transitions', icon: Icons.animation, page: AnimationScreen()),
+    (title: 'Experiment 9 - REST API', subtitle: 'Fetch and display JSON data', icon: Icons.cloud_download, page: RestApiScreen()),
   ];
 
   @override
@@ -390,4 +395,77 @@ class _AnimationScreenState extends State<AnimationScreen> with SingleTickerProv
       FilledButton.icon(onPressed: replay, icon: const Icon(Icons.replay), label: const Text('Replay Animation')),
     ]),
   )));
+}
+
+
+// Experiment 9: fetch REST API data, parse JSON and display results.
+class RestApiScreen extends StatefulWidget {
+  const RestApiScreen({super.key});
+  @override
+  State<RestApiScreen> createState() => _RestApiScreenState();
+}
+
+class _RestApiScreenState extends State<RestApiScreen> {
+  late Future<List<Map<String, dynamic>>> albums;
+
+  @override
+  void initState() {
+    super.initState();
+    albums = loadAlbums();
+  }
+
+  Future<List<Map<String, dynamic>>> loadAlbums() async {
+    final response = await http
+        .get(Uri.parse('https://jsonplaceholder.typicode.com/albums?_limit=10'))
+        .timeout(const Duration(seconds: 15));
+    if (response.statusCode != 200) {
+      throw Exception('API request failed: ${response.statusCode}');
+    }
+    final data = jsonDecode(response.body) as List<dynamic>;
+    return data.cast<Map<String, dynamic>>();
+  }
+
+  void refresh() => setState(() => albums = loadAlbums());
+
+  @override
+  Widget build(BuildContext context) => PageShell(
+    title: 'Experiment 9 - REST API',
+    child: FutureBuilder<List<Map<String, dynamic>>>(
+      future: albums,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [CircularProgressIndicator(), SizedBox(height: 12), Text('Loading API data...')],
+          ));
+        }
+        if (snapshot.hasError) {
+          return Center(child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.cloud_off, size: 48),
+              const SizedBox(height: 12),
+              const Text('Unable to fetch data. Check your connection and retry.', textAlign: TextAlign.center),
+              const SizedBox(height: 12),
+              FilledButton.icon(onPressed: refresh, icon: const Icon(Icons.refresh), label: const Text('Try again')),
+            ]),
+          ));
+        }
+        final rows = snapshot.data ?? <Map<String, dynamic>>[];
+        return ListView(padding: const EdgeInsets.all(16), children: [
+          Card(color: Theme.of(context).colorScheme.primaryContainer, child: ListTile(
+            leading: const Icon(Icons.cloud_done, size: 32),
+            title: const Text('Live API response'),
+            subtitle: Text('${rows.length} records fetched from JSONPlaceholder'),
+            trailing: IconButton(onPressed: refresh, icon: const Icon(Icons.refresh), tooltip: 'Refresh'),
+          )),
+          ...rows.map((album) => Card(child: ListTile(
+            leading: CircleAvatar(child: Text('${album['id']}')),
+            title: Text('${album['title']}', maxLines: 2, overflow: TextOverflow.ellipsis),
+            subtitle: Text('Album ID: ${album['id']} • User ID: ${album['userId']}'),
+          ))),
+        ]);
+      },
+    ),
+  );
 }
