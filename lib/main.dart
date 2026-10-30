@@ -347,8 +347,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
       const SizedBox(height: 16),
       TextFormField(controller: phone, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'Phone Number', prefixIcon: Icon(Icons.phone), border: OutlineInputBorder()), validator: validatePhone),
       const SizedBox(height: 16),
-      TextFormField(controller: course, decoration: const InputDecoration(labelText: 'Course', prefixIcon: Icon(Icons.school), border: OutlineInputBorder()), validator: (v) => v == null || v.trim().isEmpty ? 'Please enter your course' : null),      const SizedBox(height: 24),
-      FilledButton.icon(onPressed: submit, icon: const Icon(Icons.check), label: const Text('Submit')),
+      TextFormField(controller: course, decoration: const InputDecoration(labelText: 'Course', prefixIcon: Icon(Icons.school), border: OutlineInputBorder()), validator: (v) => v == null || v.trim().isEmpty ? 'Please enter your course' : null),      const SizedBox(height: 24),      FilledButton.icon(onPressed: submit, icon: const Icon(Icons.check), label: const Text('Submit')),
     ]),
   ));
 }
@@ -697,7 +696,6 @@ class StudentHome extends StatelessWidget {
       MaterialPageRoute(builder: (_) => const LoginScreen()),
       (_) => false,
     );  }
-
   @override
   Widget build(BuildContext context) {
     final skills = record.skills.split(',').map((s) => s.trim()).toList();
@@ -1047,8 +1045,7 @@ class StudentDetailScreen extends StatelessWidget {
                       ? const Text('No projects have been added yet.', style: TextStyle(color: _muted))
                       : Column(children: List.generate(projects.length, (index) => Padding(
                           padding: EdgeInsets.only(bottom: index == projects.length - 1 ? 0 : 12),
-                          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Container(width: 34, height: 34, decoration: BoxDecoration(color: const Color(0xFFFFF2E5), borderRadius: BorderRadius.circular(10)), child: const Icon(Icons.folder_open_rounded, color: Color(0xFFB66A22), size: 18)),
+                          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [                            Container(width: 34, height: 34, decoration: BoxDecoration(color: const Color(0xFFFFF2E5), borderRadius: BorderRadius.circular(10)), child: const Icon(Icons.folder_open_rounded, color: Color(0xFFB66A22), size: 18)),
                             const SizedBox(width: 11),
                             Expanded(child: Padding(padding: const EdgeInsets.only(top: 7), child: Text(projects[index], style: const TextStyle(color: _ink, fontWeight: FontWeight.w700, fontSize: 13)))),
                             const Icon(Icons.north_east_rounded, size: 16, color: Color(0xFF9AA4B5)),
@@ -1089,7 +1086,7 @@ class _AdminProfileAvatar extends StatelessWidget {
   const _AdminProfileAvatar({required this.name, required this.size});
   @override
   Widget build(BuildContext context) {
-    final initials = name.trim().split(RegExp(r'\\s+')).where((part) => part.isNotEmpty).take(2).map((part) => part[0].toUpperCase()).join();
+    final initials = name.trim().split(RegExp(r'\s+')).where((part) => part.isNotEmpty).take(2).map((part) => part[0].toUpperCase()).join();
     return Container(
       width: size,
       height: size,
@@ -1448,184 +1445,3 @@ class _StudentDashboardState extends State<StudentDashboard> {
                       leading: CircleAvatar(backgroundColor: const Color(0xFFEEF1FF), child: Icon(item.icon, color: const Color(0xFF4057B2))),
                       title: Text(item.title, style: const TextStyle(fontWeight: FontWeight.w700)),
                       subtitle: Text(item.subtitle),
-                      trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => item.page)),
-                    ),
-                  ),
-                )),
-                const SizedBox(height: 20),
-                const Center(child: Padding(
-                  padding: EdgeInsets.only(bottom: 12),
-                  child: Text('Built with Flutter · Student Profile App', style: TextStyle(color: Color(0xFF7B8496), fontSize: 12)),
-                )),
-              ],
-            ),
-          ),
-        );
-      }),
-    );
-  }
-
-  IconData _sectionIcon(String section) {
-    switch (section) {
-      case 'Overview': return Icons.home_outlined;
-      case 'Education': return Icons.school_outlined;
-      case 'Skills': return Icons.build_outlined;
-      case 'Projects': return Icons.folder_open_outlined;
-      case 'Achievements': return Icons.emoji_events_outlined;
-      case 'Contact': return Icons.mail_outline;
-      default: return Icons.science_outlined;
-    }
-  }
-
-  Widget _avatar(double radius) => CircleAvatar(
-    radius: radius / 2,
-    backgroundColor: Colors.white.withValues(alpha: 0.18),
-    child: Icon(Icons.person_rounded, size: radius * 0.56, color: Colors.white),
-  );
-
-  Widget _sectionTitle(String title, String subtitle, IconData icon, GlobalKey? key) => Padding(
-    key: key,
-    padding: const EdgeInsets.only(top: 2),
-    child: Row(children: [
-      Container(width: 42, height: 42, decoration: BoxDecoration(color: const Color(0xFFE9EDFF), borderRadius: BorderRadius.circular(13)), child: Icon(icon, color: const Color(0xFF4057B2))),
-      const SizedBox(width: 12),
-      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Color(0xFF1F2937))),
-        const SizedBox(height: 2),
-        Text(subtitle, style: const TextStyle(color: Color(0xFF6B7280), fontSize: 13)),
-      ])),
-    ]),
-  );
-
-  Widget _panel({required Widget child}) => Container(
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE5E9F2))),
-    child: child,
-  );
-}
-
-class _HeroCopy extends StatelessWidget {
-  const _HeroCopy();
-  @override
-  Widget build(BuildContext context) => const Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text('HELLO, I AM', style: TextStyle(color: Color(0xFFD8DFFF), letterSpacing: 1.7, fontSize: 11, fontWeight: FontWeight.w800)),
-      SizedBox(height: 8),
-      Text('G. Asish', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w800, height: 1.1)),
-      SizedBox(height: 8),
-      Text('Computer Science Engineering Student', style: TextStyle(color: Colors.white, fontSize: 15)),
-      SizedBox(height: 8),
-      Text('Learning, building and improving one project at a time.', style: TextStyle(color: Color(0xFFE0E6FF), fontSize: 13, height: 1.4)),
-    ],
-  );
-}
-
-class _AvailabilityTag extends StatelessWidget {
-  const _AvailabilityTag();
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(30), border: Border.all(color: Colors.white.withValues(alpha: 0.25))),
-    child: const Row(mainAxisSize: MainAxisSize.min, children: [
-      Icon(Icons.circle, size: 8, color: Color(0xFF8FE0B1)),
-      SizedBox(width: 8),
-      Text('Open to opportunities', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
-    ]),
-  );
-}
-
-class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  const _StatCard({required this.icon, required this.label, required this.value});
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(15),
-    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE5E9F2))),
-    child: Row(children: [
-      Container(width: 38, height: 38, decoration: BoxDecoration(color: const Color(0xFFEEF1FF), borderRadius: BorderRadius.circular(12)), child: Icon(icon, color: const Color(0xFF4057B2), size: 20)),
-      const SizedBox(width: 10),
-      Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: const TextStyle(color: Color(0xFF7B8496), fontSize: 12)),
-        const SizedBox(height: 3),
-        Text(value, style: const TextStyle(color: Color(0xFF263248), fontWeight: FontWeight.w800, fontSize: 14)),
-      ])),
-    ]),
-  );
-}
-
-class _Pill extends StatelessWidget {
-  final String text;
-  const _Pill({required this.text});
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
-    decoration: BoxDecoration(color: const Color(0xFFF0F3FF), borderRadius: BorderRadius.circular(30)),
-    child: Text(text, style: const TextStyle(color: Color(0xFF4057B2), fontSize: 12, fontWeight: FontWeight.w700)),
-  );
-}
-
-class _SkillChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  const _SkillChip({required this.label, required this.icon});
-  @override
-  Widget build(BuildContext context) => Chip(
-    avatar: Icon(icon, size: 17, color: const Color(0xFF4057B2)),
-    label: Text(label),
-    backgroundColor: const Color(0xFFF7F8FC),
-    side: const BorderSide(color: Color(0xFFE1E6F0)),
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-  );
-}
-
-class _ProjectCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-  final List<String> tags;
-  final VoidCallback onTap;
-  const _ProjectCard({required this.icon, required this.title, required this.description, required this.tags, required this.onTap});
-  @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(18),
-    child: Container(
-      padding: const EdgeInsets.all(19),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE5E9F2))),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Container(width: 42, height: 42, decoration: BoxDecoration(color: const Color(0xFFE9EDFF), borderRadius: BorderRadius.circular(13)), child: Icon(icon, color: const Color(0xFF4057B2))),
-          const Spacer(),
-          const Icon(Icons.north_east_rounded, color: Color(0xFF8B95A7), size: 18),
-        ]),
-        const SizedBox(height: 14),
-        Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
-        const SizedBox(height: 7),
-        Expanded(child: Text(description, style: const TextStyle(color: Color(0xFF667085), height: 1.4, fontSize: 13))),
-        const SizedBox(height: 10),
-        Wrap(spacing: 6, runSpacing: 6, children: tags.map((tag) => _Pill(text: tag)).toList()),
-      ]),
-    ),
-  );
-}
-
-class _AchievementRow extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  const _AchievementRow({required this.icon, required this.title, required this.subtitle});
-  @override
-  Widget build(BuildContext context) => Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    Container(width: 38, height: 38, decoration: BoxDecoration(color: const Color(0xFFE9EDFF), borderRadius: BorderRadius.circular(12)), child: Icon(icon, color: const Color(0xFF4057B2), size: 20)),
-    const SizedBox(width: 12),
-    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
-      const SizedBox(height: 4),
-      Text(subtitle, style: const TextStyle(color: Color(0xFF667085), height: 1.4, fontSize: 13)),
-    ])),
-  ]);
-}
