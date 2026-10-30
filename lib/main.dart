@@ -691,16 +691,201 @@ class _AdminDashboardState extends State<AdminDashboard> {
 class StudentHome extends StatelessWidget {
   final StudentRecord record;
   const StudentHome({super.key, required this.record});
+
+  void _logout(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (_) => false,
+    );
+  }
+
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('My Student Profile'), actions: [
-      TextButton.icon(onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const LoginScreen()), (_) => false), icon: const Icon(Icons.logout), label: const Text('Logout')),
-    ]),
-    body: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 850),
-      child: ListView(padding: const EdgeInsets.all(22), children: [
-        StudentDetailCard(record: record),
-        const Text('You can view your own profile here. Admin accounts can access the full student directory.', style: TextStyle(color: Color(0xFF667085))),
-      ]),
+  Widget build(BuildContext context) {
+    final skills = record.skills.split(',').map((s) => s.trim()).toList();
+    final projects = record.projects.split(',').map((s) => s.trim()).toList();
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF4F6FB),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        title: const Row(children: [
+          Icon(Icons.school_rounded, color: Color(0xFF4057B2)),
+          SizedBox(width: 10),
+          Text('Student Profile Portal', style: TextStyle(fontWeight: FontWeight.w800)),
+        ]),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: TextButton.icon(
+              onPressed: () => _logout(context),
+              icon: const Icon(Icons.logout),
+              label: const Text('Logout'),
+            ),
+          ),
+        ],
+      ),
+      body: LayoutBuilder(builder: (context, constraints) {
+        final wide = constraints.maxWidth >= 850;
+        final cardWidth = wide ? (constraints.maxWidth - 52) / 2 : constraints.maxWidth;
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1120),
+            child: ListView(
+              padding: EdgeInsets.all(wide ? 28 : 16),
+              children: [
+                Container(
+                  padding: EdgeInsets.all(wide ? 30 : 22),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF263B83), Color(0xFF536BD1)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(22),
+                  ),
+                  child: Row(children: [
+                    CircleAvatar(
+                      radius: wide ? 38 : 30,
+                      backgroundColor: Colors.white.withValues(alpha: 0.18),
+                      child: const Icon(Icons.person, color: Colors.white, size: 38),
+                    ),
+                    const SizedBox(width: 18),
+                    Expanded(child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('STUDENT DASHBOARD', style: TextStyle(color: Colors.white70, fontSize: 11, letterSpacing: 1.3, fontWeight: FontWeight.w700)),
+                        const SizedBox(height: 7),
+                        Text('Welcome, ${record.name}', style: TextStyle(color: Colors.white, fontSize: wide ? 27 : 21, fontWeight: FontWeight.w800)),
+                        const SizedBox(height: 5),
+                        Text('${record.course}  •  ${record.year}', style: const TextStyle(color: Colors.white70)),
+                      ],
+                    )),
+                  ]),
+                ),
+                const SizedBox(height: 22),
+                const Text('Your overview', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF202A44))),
+                const SizedBox(height: 12),
+                Wrap(spacing: 12, runSpacing: 12, children: [
+                  _StudentStatCard(width: wide ? (constraints.maxWidth - 36) / 4 : (constraints.maxWidth - 12) / 2, title: 'CGPA', value: record.cgpa, icon: Icons.grade_rounded, tint: const Color(0xFFE9EDFF)),
+                  _StudentStatCard(width: wide ? (constraints.maxWidth - 36) / 4 : (constraints.maxWidth - 12) / 2, title: 'Academic year', value: record.year, icon: Icons.calendar_month_rounded, tint: const Color(0xFFE8F7EE)),
+                  _StudentStatCard(width: wide ? (constraints.maxWidth - 36) / 4 : (constraints.maxWidth - 12) / 2, title: 'Projects', value: '${projects.length}', icon: Icons.folder_copy_outlined, tint: const Color(0xFFFFF2DF)),
+                  _StudentStatCard(width: wide ? (constraints.maxWidth - 36) / 4 : (constraints.maxWidth - 12) / 2, title: 'Skills', value: '${skills.length}', icon: Icons.code_rounded, tint: const Color(0xFFF2EAFE)),
+                ]),
+                const SizedBox(height: 24),
+                const Text('My profile', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF202A44))),
+                const SizedBox(height: 12),
+                Wrap(spacing: 16, runSpacing: 16, children: [
+                  SizedBox(width: cardWidth, child: _StudentInfoBox(
+                    title: 'Personal details',
+                    icon: Icons.person_outline,
+                    child: Column(children: [
+                      _StudentDetailLine('Full name', record.name, Icons.badge_outlined),
+                      _StudentDetailLine('Roll number', record.rollNo, Icons.confirmation_number_outlined),
+                      _StudentDetailLine('Email', record.email, Icons.email_outlined),
+                    ]),
+                  )),
+                  SizedBox(width: cardWidth, child: _StudentInfoBox(
+                    title: 'Education',
+                    icon: Icons.school_outlined,
+                    child: Column(children: [
+                      _StudentDetailLine('Course', record.course, Icons.menu_book_outlined),
+                      _StudentDetailLine('Year', record.year, Icons.calendar_today_outlined),
+                      _StudentDetailLine('CGPA', record.cgpa, Icons.grade_outlined),
+                    ]),
+                  )),
+                  SizedBox(width: cardWidth, child: _StudentInfoBox(
+                    title: 'My skills',
+                    icon: Icons.code_rounded,
+                    child: Wrap(spacing: 8, runSpacing: 8, children: skills.map((skill) => Chip(
+                      avatar: const Icon(Icons.check_circle_outline, size: 16),
+                      label: Text(skill),
+                      backgroundColor: const Color(0xFFF0F2FF),
+                      side: BorderSide.none,
+                    )).toList()),
+                  )),
+                  SizedBox(width: cardWidth, child: _StudentInfoBox(
+                    title: 'My projects',
+                    icon: Icons.folder_open_outlined,
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: projects.map((project) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        const Icon(Icons.task_alt, color: Color(0xFF4057B2), size: 20),
+                        const SizedBox(width: 10),
+                        Expanded(child: Text(project, style: const TextStyle(fontWeight: FontWeight.w600))),
+                      ]),
+                    )).toList()),
+                  )),
+                ]),
+                const SizedBox(height: 18),
+                Container(
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE7EAF2))),
+                  child: const Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Icon(Icons.info_outline, color: Color(0xFF4057B2)),
+                    SizedBox(width: 12),
+                    Expanded(child: Text('This dashboard displays your own student information. Contact your college administrator if any profile details need to be updated.', style: TextStyle(color: Color(0xFF667085), height: 1.4))),
+                  ]),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class _StudentStatCard extends StatelessWidget {
+  final double width;
+  final String title, value;
+  final IconData icon;
+  final Color tint;
+  const _StudentStatCard({required this.width, required this.title, required this.value, required this.icon, required this.tint});
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: width,
+    child: Card(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: const BorderSide(color: Color(0xFFE7EAF2))),
+      child: Padding(padding: const EdgeInsets.all(17), child: Row(children: [
+        Container(width: 44, height: 44, decoration: BoxDecoration(color: tint, borderRadius: BorderRadius.circular(13)), child: Icon(icon, color: const Color(0xFF4057B2))),
+        const SizedBox(width: 12),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(value, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Color(0xFF202A44))),
+          const SizedBox(height: 3),
+          Text(title, style: const TextStyle(fontSize: 12, color: Color(0xFF667085))),
+        ])),
+      ])),
+    ),
+  );
+}
+
+class _StudentInfoBox extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Widget child;
+  const _StudentInfoBox({required this.title, required this.icon, required this.child});
+
+  @override
+  Widget build(BuildContext context) => Card(
+    elevation: 0,
+    color: Colors.white,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18), side: const BorderSide(color: Color(0xFFE7EAF2))),
+    child: Padding(padding: const EdgeInsets.all(20), child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(children: [
+          Container(width: 38, height: 38, decoration: BoxDecoration(color: const Color(0xFFE9EDFF), borderRadius: BorderRadius.circular(11)), child: Icon(icon, color: const Color(0xFF4057B2), size: 21)),
+          const SizedBox(width: 11),
+          Text(title, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: Color(0xFF202A44))),
+        ]),
+        const SizedBox(height: 16),
+        child,
+      ],
     )),
   );
 }
