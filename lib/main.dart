@@ -347,8 +347,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
       const SizedBox(height: 16),
       TextFormField(controller: phone, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'Phone Number', prefixIcon: Icon(Icons.phone), border: OutlineInputBorder()), validator: validatePhone),
       const SizedBox(height: 16),
-      TextFormField(controller: course, decoration: const InputDecoration(labelText: 'Course', prefixIcon: Icon(Icons.school), border: OutlineInputBorder()), validator: (v) => v == null || v.trim().isEmpty ? 'Please enter your course' : null),
-      const SizedBox(height: 24),
+      TextFormField(controller: course, decoration: const InputDecoration(labelText: 'Course', prefixIcon: Icon(Icons.school), border: OutlineInputBorder()), validator: (v) => v == null || v.trim().isEmpty ? 'Please enter your course' : null),      const SizedBox(height: 24),
       FilledButton.icon(onPressed: submit, icon: const Icon(Icons.check), label: const Text('Submit')),
     ]),
   ));
@@ -697,8 +696,7 @@ class StudentHome extends StatelessWidget {
       context,
       MaterialPageRoute(builder: (_) => const LoginScreen()),
       (_) => false,
-    );
-  }
+    );  }
 
   @override
   Widget build(BuildContext context) {
@@ -892,34 +890,325 @@ class _StudentInfoBox extends StatelessWidget {
 class StudentDetailScreen extends StatelessWidget {
   final StudentRecord record;
   const StudentDetailScreen({super.key, required this.record});
+
+  static const _ink = Color(0xFF17233D);
+  static const _muted = Color(0xFF68758D);
+  static const _blue = Color(0xFF4057B2);
+  static const _line = Color(0xFFE7EBF3);
+
   @override
-  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('Student Details')),
-    body: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 850),
-      child: ListView(padding: const EdgeInsets.all(22), children: [StudentDetailCard(record: record)]))));
+  Widget build(BuildContext context) {
+    final skills = record.skills.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+    final projects = record.projects.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+    final wide = MediaQuery.sizeOf(context).width >= 850;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF4F6FB),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        elevation: 0,
+        title: const Text('Student profile', style: TextStyle(fontWeight: FontWeight.w800, color: _ink)),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 18),
+            child: Center(child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              decoration: BoxDecoration(color: const Color(0xFFEAF7EF), borderRadius: BorderRadius.circular(30)),
+              child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.verified_rounded, size: 15, color: Color(0xFF23804D)),
+                SizedBox(width: 6),
+                Text('ADMIN VIEW', style: TextStyle(color: Color(0xFF23804D), fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: .7)),
+              ]),
+            )),
+          ),
+        ],
+      ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1180),
+          child: ListView(
+            padding: EdgeInsets.all(wide ? 30 : 16),
+            children: [
+              Container(
+                padding: EdgeInsets.all(wide ? 30 : 22),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF182653), Color(0xFF344B9B), Color(0xFF6578D6)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(26),
+                  boxShadow: [BoxShadow(color: _blue.withValues(alpha: .18), blurRadius: 28, offset: const Offset(0, 12))],
+                ),
+                child: Stack(children: [
+                  Positioned(right: -22, top: -38, child: Icon(Icons.school_rounded, size: 190, color: Colors.white.withValues(alpha: .055))),
+                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Row(children: [
+                      const Icon(Icons.dashboard_customize_rounded, color: Color(0xFFDCE4FF), size: 17),
+                      const SizedBox(width: 8),
+                      const Text('STUDENT RECORD  /  PROFILE OVERVIEW', style: TextStyle(color: Color(0xFFDCE4FF), fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.1)),
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+                        decoration: BoxDecoration(color: Colors.white.withValues(alpha: .14), borderRadius: BorderRadius.circular(30), border: Border.all(color: Colors.white.withValues(alpha: .2))),
+                        child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(Icons.circle, size: 7, color: Color(0xFF8FE0B1)),
+                          SizedBox(width: 7),
+                          Text('Demo record', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700)),
+                        ]),
+                      ),
+                    ]),
+                    const SizedBox(height: 26),
+                    if (wide)
+                      Row(children: [
+                        _AdminProfileAvatar(name: record.name, size: 104),
+                        const SizedBox(width: 22),
+                        Expanded(child: _AdminProfileIdentity(record: record)),
+                        const SizedBox(width: 12),
+                        const Icon(Icons.arrow_outward_rounded, color: Colors.white70, size: 25),
+                      ])
+                    else
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        _AdminProfileAvatar(name: record.name, size: 86),
+                        const SizedBox(height: 18),
+                        _AdminProfileIdentity(record: record),
+                      ]),
+                    const SizedBox(height: 22),
+                    Wrap(spacing: 9, runSpacing: 9, children: [
+                      _AdminHeroPill(icon: Icons.badge_outlined, text: record.rollNo),
+                      _AdminHeroPill(icon: Icons.school_outlined, text: record.course),
+                      _AdminHeroPill(icon: Icons.calendar_month_outlined, text: record.year),
+                    ]),
+                  ]),
+                ]),
+              ),
+              const SizedBox(height: 24),
+              const _AdminSectionHeading(eyebrow: 'AT A GLANCE', title: 'Academic snapshot', subtitle: 'A quick overview of this student’s profile'),
+              const SizedBox(height: 14),
+              LayoutBuilder(builder: (context, c) {
+                final columns = c.maxWidth >= 850 ? 4 : c.maxWidth >= 520 ? 2 : 1;
+                final width = (c.maxWidth - (columns - 1) * 12) / columns;
+                return Wrap(spacing: 12, runSpacing: 12, children: [
+                  _AdminMetricCard(width: width, icon: Icons.workspace_premium_rounded, label: 'CGPA', value: record.cgpa, note: 'Academic score', tint: const Color(0xFFECEFFF), accent: const Color(0xFF485CC0)),
+                  _AdminMetricCard(width: width, icon: Icons.code_rounded, label: 'SKILLS', value: '${skills.length}', note: 'Listed skills', tint: const Color(0xFFE8F7F1), accent: const Color(0xFF23805B)),
+                  _AdminMetricCard(width: width, icon: Icons.folder_special_rounded, label: 'PROJECTS', value: '${projects.length}', note: 'Listed projects', tint: const Color(0xFFFFF2E5), accent: const Color(0xFFB66A22)),
+                  _AdminMetricCard(width: width, icon: Icons.school_rounded, label: 'PROGRAMME', value: record.year, note: record.course, tint: const Color(0xFFF3ECFF), accent: const Color(0xFF8054B8)),
+                ]);
+              }),
+              const SizedBox(height: 28),
+              const _AdminSectionHeading(eyebrow: 'STUDENT INFORMATION', title: 'Profile details', subtitle: 'Personal and academic information in one place'),
+              const SizedBox(height: 14),
+              LayoutBuilder(builder: (context, c) {
+                final columns = c.maxWidth >= 850 ? 2 : 1;
+                final width = columns == 2 ? (c.maxWidth - 14) / 2 : c.maxWidth;
+                return Wrap(spacing: 14, runSpacing: 14, children: [
+                  SizedBox(width: width, child: _AdminInfoPanel(
+                    icon: Icons.person_rounded,
+                    title: 'Personal information',
+                    subtitle: 'Student identity and contact',
+                    child: Column(children: [
+                      _AdminDetailRow(label: 'Full name', value: record.name, icon: Icons.person_outline_rounded),
+                      _AdminDetailRow(label: 'Roll number', value: record.rollNo, icon: Icons.confirmation_number_outlined),
+                      _AdminDetailRow(label: 'Email address', value: record.email, icon: Icons.alternate_email_rounded),
+                    ]),
+                  )),
+                  SizedBox(width: width, child: _AdminInfoPanel(
+                    icon: Icons.school_rounded,
+                    title: 'Academic information',
+                    subtitle: 'Current course and performance',
+                    child: Column(children: [
+                      _AdminDetailRow(label: 'Programme', value: record.course, icon: Icons.menu_book_rounded),
+                      _AdminDetailRow(label: 'Academic year', value: record.year, icon: Icons.calendar_today_rounded),
+                      _AdminDetailRow(label: 'Current CGPA', value: record.cgpa, icon: Icons.grade_rounded),
+                    ]),
+                  )),
+                  SizedBox(width: width, child: _AdminInfoPanel(
+                    icon: Icons.auto_awesome_rounded,
+                    title: 'Skills & technologies',
+                    subtitle: '${skills.length} skills listed on this profile',
+                    child: skills.isEmpty
+                      ? const Text('No skills have been added yet.', style: TextStyle(color: _muted))
+                      : Wrap(spacing: 9, runSpacing: 9, children: skills.map((skill) => Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
+                          decoration: BoxDecoration(color: const Color(0xFFF1F3FF), borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFE1E6FF))),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            const Icon(Icons.check_circle_rounded, size: 15, color: _blue),
+                            const SizedBox(width: 7),
+                            Text(skill, style: const TextStyle(color: _ink, fontWeight: FontWeight.w700, fontSize: 12)),
+                          ]),
+                        )).toList()),
+                  )),
+                  SizedBox(width: width, child: _AdminInfoPanel(
+                    icon: Icons.rocket_launch_rounded,
+                    title: 'Projects & work',
+                    subtitle: '${projects.length} projects listed on this profile',
+                    child: projects.isEmpty
+                      ? const Text('No projects have been added yet.', style: TextStyle(color: _muted))
+                      : Column(children: List.generate(projects.length, (index) => Padding(
+                          padding: EdgeInsets.only(bottom: index == projects.length - 1 ? 0 : 12),
+                          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Container(width: 34, height: 34, decoration: BoxDecoration(color: const Color(0xFFFFF2E5), borderRadius: BorderRadius.circular(10)), child: const Icon(Icons.folder_open_rounded, color: Color(0xFFB66A22), size: 18)),
+                            const SizedBox(width: 11),
+                            Expanded(child: Padding(padding: const EdgeInsets.only(top: 7), child: Text(projects[index], style: const TextStyle(color: _ink, fontWeight: FontWeight.w700, fontSize: 13)))),
+                            const Icon(Icons.north_east_rounded, size: 16, color: Color(0xFF9AA4B5)),
+                          ]),
+                        ))),
+                  )),
+                ]);
+              }),
+              const SizedBox(height: 22),
+              Container(
+                padding: const EdgeInsets.all(17),
+                decoration: BoxDecoration(color: const Color(0xFFEFF2FF), borderRadius: BorderRadius.circular(17), border: Border.all(color: const Color(0xFFDDE3FF))),
+                child: const Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Icon(Icons.info_outline_rounded, color: _blue, size: 21),
+                  SizedBox(width: 12),
+                  Expanded(child: Text('Administrator view · This screen displays the information available in the current demo student record. Connect a secure database to manage verified student information.', style: TextStyle(color: Color(0xFF46547A), height: 1.45, fontSize: 12))),
+                ]),
+              ),
+              const SizedBox(height: 18),
+              Align(alignment: Alignment.centerLeft, child: OutlinedButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back_rounded),
+                label: const Text('Back to student directory'),
+                style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15), foregroundColor: _blue, side: const BorderSide(color: Color(0xFFD5DCF4))),
+              )),
+              const SizedBox(height: 18),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
-class StudentDetailCard extends StatelessWidget {
-  final StudentRecord record;
-  const StudentDetailCard({super.key, required this.record});
+
+class _AdminProfileAvatar extends StatelessWidget {
+  final String name;
+  final double size;
+  const _AdminProfileAvatar({required this.name, required this.size});
   @override
-  Widget build(BuildContext context) => Card(child: Padding(padding: const EdgeInsets.all(22),
+  Widget build(BuildContext context) {
+    final initials = name.trim().split(RegExp(r'\\s+')).where((part) => part.isNotEmpty).take(2).map((part) => part[0].toUpperCase()).join();
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: .15), border: Border.all(color: Colors.white.withValues(alpha: .55), width: 2), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: .12), blurRadius: 18, offset: const Offset(0, 8))]),
+      child: Center(child: Text(initials.isEmpty ? 'S' : initials, style: TextStyle(color: Colors.white, fontSize: size * .31, fontWeight: FontWeight.w900))),
+    );
+  }
+}
+
+class _AdminProfileIdentity extends StatelessWidget {
+  final StudentRecord record;
+  const _AdminProfileIdentity({required this.record});
+  @override
+  Widget build(BuildContext context) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Text(record.name, style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w900, height: 1.1)),
+    const SizedBox(height: 8),
+    Text(record.course + ' · ' + record.year, style: const TextStyle(color: Color(0xFFE1E7FF), fontSize: 14, fontWeight: FontWeight.w600)),
+    const SizedBox(height: 7),
+    Text(record.email, style: const TextStyle(color: Color(0xFFD2DBFF), fontSize: 13)),
+  ]);
+}
+
+class _AdminHeroPill extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  const _AdminHeroPill({required this.icon, required this.text});
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    decoration: BoxDecoration(color: Colors.white.withValues(alpha: .12), borderRadius: BorderRadius.circular(11), border: Border.all(color: Colors.white.withValues(alpha: .2))),
+    child: Row(mainAxisSize: MainAxisSize.min, children: [
+      Icon(icon, size: 15, color: const Color(0xFFE1E7FF)),
+      const SizedBox(width: 7),
+      Text(text, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700)),
+    ]),
+  );
+}
+
+class _AdminSectionHeading extends StatelessWidget {
+  final String eyebrow, title, subtitle;
+  const _AdminSectionHeading({required this.eyebrow, required this.title, required this.subtitle});
+  @override
+  Widget build(BuildContext context) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Text(eyebrow, style: const TextStyle(color: Color(0xFF77839A), fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.3)),
+    const SizedBox(height: 5),
+    Text(title, style: const TextStyle(color: Color(0xFF17233D), fontSize: 22, fontWeight: FontWeight.w900)),
+    const SizedBox(height: 4),
+    Text(subtitle, style: const TextStyle(color: Color(0xFF68758D), fontSize: 13)),
+  ]);
+}
+
+class _AdminMetricCard extends StatelessWidget {
+  final double width;
+  final IconData icon;
+  final String label, value, note;
+  final Color tint, accent;
+  const _AdminMetricCard({required this.width, required this.icon, required this.label, required this.value, required this.note, required this.tint, required this.accent});
+  @override
+  Widget build(BuildContext context) => SizedBox(width: width, child: Container(
+    padding: const EdgeInsets.all(17),
+    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE7EBF3)), boxShadow: [BoxShadow(color: const Color(0xFF23345F).withValues(alpha: .035), blurRadius: 14, offset: const Offset(0, 5))]),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(children: [
-        const CircleAvatar(radius: 30, backgroundColor: Color(0xFFE9EDFF), child: Icon(Icons.person, color: Color(0xFF4057B2), size: 34)),
-        const SizedBox(width: 14),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(record.name, style: const TextStyle(fontSize: 23, fontWeight: FontWeight.w800)),
-          Text(record.course, style: const TextStyle(color: Color(0xFF667085))),
-        ])),
-        Chip(label: Text('CGPA ' + record.cgpa)),
+        Container(width: 39, height: 39, decoration: BoxDecoration(color: tint, borderRadius: BorderRadius.circular(12)), child: Icon(icon, color: accent, size: 20)),
+        const Spacer(),
+        const Icon(Icons.trending_up_rounded, color: Color(0xFF9AA4B5), size: 17),
       ]),
-      const Divider(height: 30),
-      _StudentDetailLine('Roll number', record.rollNo, Icons.badge_outlined),
-      _StudentDetailLine('Email', record.email, Icons.email_outlined),
-      _StudentDetailLine('Year', record.year, Icons.calendar_today_outlined),
-      _StudentDetailLine('Skills', record.skills, Icons.code),
-      _StudentDetailLine('Projects', record.projects, Icons.folder_open_outlined),
-    ])));
+      const SizedBox(height: 16),
+      Text(value, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Color(0xFF17233D), fontSize: 23, fontWeight: FontWeight.w900)),
+      const SizedBox(height: 4),
+      Text(label, style: const TextStyle(color: Color(0xFF46536B), fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: .8)),
+      const SizedBox(height: 5),
+      Text(note, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Color(0xFF8993A5), fontSize: 11)),
+    ]),
+  ));
 }
+
+class _AdminInfoPanel extends StatelessWidget {
+  final IconData icon;
+  final String title, subtitle;
+  final Widget child;
+  const _AdminInfoPanel({required this.icon, required this.title, required this.subtitle, required this.child});
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFFE7EBF3)), boxShadow: [BoxShadow(color: const Color(0xFF23345F).withValues(alpha: .03), blurRadius: 16, offset: const Offset(0, 5))]),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Container(width: 40, height: 40, decoration: BoxDecoration(color: const Color(0xFFEEF1FF), borderRadius: BorderRadius.circular(12)), child: Icon(icon, color: const Color(0xFF4057B2), size: 21)),
+        const SizedBox(width: 11),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(title, style: const TextStyle(color: Color(0xFF17233D), fontSize: 15, fontWeight: FontWeight.w900)),
+          const SizedBox(height: 3),
+          Text(subtitle, style: const TextStyle(color: Color(0xFF8993A5), fontSize: 11)),
+        ])),
+      ]),
+      const SizedBox(height: 18),
+      child,
+    ]),
+  );
+}
+
+class _AdminDetailRow extends StatelessWidget {
+  final String label, value;
+  final IconData icon;
+  const _AdminDetailRow({required this.label, required this.value, required this.icon});
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10),
+    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Icon(icon, size: 17, color: const Color(0xFF8390A7)),
+      const SizedBox(width: 10),
+      SizedBox(width: 112, child: Text(label, style: const TextStyle(color: Color(0xFF7B879B), fontSize: 12, fontWeight: FontWeight.w600))),
+      const SizedBox(width: 8),
+      Expanded(child: Text(value, style: const TextStyle(color: Color(0xFF26334D), fontSize: 12, fontWeight: FontWeight.w800))),
+    ]),
+  );
+}
+
 class _StudentDetailLine extends StatelessWidget {
   final String label, value;
   final IconData icon;
@@ -1047,8 +1336,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                   physics: const NeverScrollableScrollPhysics(),
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
-                  childAspectRatio: wide ? 1.8 : constraints.maxWidth >= 520 ? 2.1 : 3.4,
-                  children: const [
+                  childAspectRatio: wide ? 1.8 : constraints.maxWidth >= 520 ? 2.1 : 3.4,                  children: const [
                     _StatCard(icon: Icons.school_outlined, label: 'Degree', value: 'B.Tech CSE'),
                     _StatCard(icon: Icons.grade_outlined, label: 'CGPA', value: '9.2'),
                     _StatCard(icon: Icons.code_rounded, label: 'Focus', value: 'Development'),
