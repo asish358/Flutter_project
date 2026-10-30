@@ -26,7 +26,7 @@ class StudentProfileApp extends StatelessWidget {
             bodyLarge: TextStyle(fontSize: 16),
           ),
         ),
-        home: const StudentDashboard(),
+        home: const LoginScreen(),
         routes: {
           '/responsive': (_) => const ResponsiveScreen(),
           '/state': (_) => const StateScreen(),
@@ -561,6 +561,191 @@ class TestingDebuggingScreen extends StatelessWidget {
       ],
     ),
   );
+}
+
+
+
+// Demo-only role login. Use Firebase Authentication and a database for production.
+class StudentRecord {
+  final String name, rollNo, email, course, year, cgpa, skills, projects;
+  const StudentRecord(this.name, this.rollNo, this.email, this.course, this.year, this.cgpa, this.skills, this.projects);
+}
+const demoStudents = <StudentRecord>[
+  StudentRecord('G. Asish', '24AG1A0522', 'asish@student.demo', 'B.Tech CSE', '2nd Year', '9.2', 'Python, Java, C, Flutter, DSA', 'Student Profile App, Student Grade Tracker'),
+  StudentRecord('Aarav Kumar', '24AG1A0508', 'aarav@student.demo', 'B.Tech CSE', '2nd Year', '8.7', 'Python, HTML, CSS', 'Attendance Tracker'),
+  StudentRecord('Priya Sharma', '24AG1A0516', 'priya@student.demo', 'B.Tech CSE', '2nd Year', '9.0', 'Java, SQL, UI Design', 'Library Management System'),
+  StudentRecord('Rahul Reddy', '24AG1A0531', 'rahul@student.demo', 'B.Tech CSE', '2nd Year', '8.4', 'C, Python, Networking', 'Network Monitor'),
+];
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+class _LoginScreenState extends State<LoginScreen> {
+  final email = TextEditingController();
+  final password = TextEditingController();
+  String role = 'Student';
+  String? error;
+  bool hidePassword = true;
+  void login() {
+    final id = email.text.trim().toLowerCase();
+    if (role == 'Admin' && id == 'admin@college.com' && password.text == 'admin123') {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdminDashboard()));
+      return;
+    }
+    final found = demoStudents.where((s) => s.email == id);
+    if (role == 'Student' && password.text == 'student123' && found.isNotEmpty) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => StudentHome(record: found.first)));
+      return;
+    }
+    setState(() => error = 'Invalid login. Please check the demo details below.');
+  }
+  @override
+  void dispose() { email.dispose(); password.dispose(); super.dispose(); }
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: const Color(0xFFF4F6FB),
+    body: Center(child: SingleChildScrollView(padding: const EdgeInsets.all(20),
+      child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 430),
+        child: Card(child: Padding(padding: const EdgeInsets.all(28), child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          const CircleAvatar(radius: 30, backgroundColor: Color(0xFFE9EDFF), child: Icon(Icons.school, color: Color(0xFF4057B2), size: 34)),
+          const SizedBox(height: 16),
+          const Text('Student Profile Portal', textAlign: TextAlign.center, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 6),
+          const Text('Sign in to continue', textAlign: TextAlign.center, style: TextStyle(color: Color(0xFF667085))),
+          const SizedBox(height: 24),
+          SegmentedButton<String>(segments: const [
+            ButtonSegment(value: 'Student', label: Text('Student'), icon: Icon(Icons.person_outline)),
+            ButtonSegment(value: 'Admin', label: Text('Admin'), icon: Icon(Icons.admin_panel_settings_outlined)),
+          ], selected: {role}, onSelectionChanged: (v) => setState(() { role = v.first; error = null; })),
+          const SizedBox(height: 16),
+          TextField(controller: email, keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(labelText: 'Email / Login ID', prefixIcon: Icon(Icons.email_outlined), border: OutlineInputBorder())),
+          const SizedBox(height: 14),
+          TextField(controller: password, obscureText: hidePassword,
+            decoration: InputDecoration(labelText: 'Password', prefixIcon: const Icon(Icons.lock_outline),
+              suffixIcon: IconButton(icon: Icon(hidePassword ? Icons.visibility : Icons.visibility_off),
+                onPressed: () => setState(() => hidePassword = !hidePassword)), border: const OutlineInputBorder())),
+          if (error != null) Padding(padding: const EdgeInsets.only(top: 12), child: Text(error!, style: const TextStyle(color: Colors.red), textAlign: TextAlign.center)),
+          const SizedBox(height: 18),
+          FilledButton.icon(onPressed: login, icon: const Icon(Icons.login), label: const Padding(padding: EdgeInsets.all(12), child: Text('Login'))),
+          const SizedBox(height: 18),
+          Container(padding: const EdgeInsets.all(13), decoration: BoxDecoration(color: const Color(0xFFF3F5FA), borderRadius: BorderRadius.circular(12)),
+            child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Demo login details', style: TextStyle(fontWeight: FontWeight.w800)),
+              SizedBox(height: 8),
+              Text('Admin: admin@college.com / admin123'),
+              Text('Student: asish@student.demo / student123'),
+              Text('Other sample students: use their email / student123'),
+            ])),
+          const SizedBox(height: 12),
+          const Text('Demo only — do not enter real passwords or private student data.', textAlign: TextAlign.center, style: TextStyle(fontSize: 11, color: Color(0xFF7B8496))),
+        ]))),
+      ),
+    )),
+  );
+}
+
+class AdminDashboard extends StatefulWidget {
+  const AdminDashboard({super.key});
+  @override
+  State<AdminDashboard> createState() => _AdminDashboardState();
+}
+class _AdminDashboardState extends State<AdminDashboard> {
+  String query = '';
+  @override
+  Widget build(BuildContext context) {
+    final list = demoStudents.where((s) => s.name.toLowerCase().contains(query.toLowerCase()) || s.rollNo.toLowerCase().contains(query.toLowerCase()) || s.email.toLowerCase().contains(query.toLowerCase())).toList();
+    return Scaffold(
+      backgroundColor: const Color(0xFFF4F6FB),
+      appBar: AppBar(title: const Text('Admin Dashboard'), actions: [
+        TextButton.icon(onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const LoginScreen()), (_) => false), icon: const Icon(Icons.logout), label: const Text('Logout')),
+      ]),
+      body: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 1000),
+        child: ListView(padding: const EdgeInsets.all(22), children: [
+          const Text('All student profiles', style: TextStyle(fontSize: 27, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 5),
+          const Text('Search the directory and open a student profile.', style: TextStyle(color: Color(0xFF667085))),
+          const SizedBox(height: 18),
+          Card(child: ListTile(leading: const Icon(Icons.groups, color: Color(0xFF4057B2)), title: const Text('Total students'), trailing: Text(demoStudents.length.toString(), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)))),
+          const SizedBox(height: 12),
+          TextField(onChanged: (v) => setState(() => query = v), decoration: const InputDecoration(hintText: 'Search name, roll number or email', prefixIcon: Icon(Icons.search), border: OutlineInputBorder())),
+          const SizedBox(height: 12),
+          ...list.map((s) => Card(child: ListTile(
+            leading: const CircleAvatar(backgroundColor: Color(0xFFE9EDFF), child: Icon(Icons.person, color: Color(0xFF4057B2))),
+            title: Text(s.name, style: const TextStyle(fontWeight: FontWeight.w700)),
+            subtitle: Text(s.rollNo + '  •  ' + s.email + '  •  CGPA ' + s.cgpa),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => StudentDetailScreen(record: s))),
+          ))),
+          if (list.isEmpty) const Padding(padding: EdgeInsets.all(24), child: Text('No matching students found.', textAlign: TextAlign.center)),
+          const SizedBox(height: 10),
+          const Text('These are sample demo records. Connect a database for real student information.', style: TextStyle(fontSize: 12, color: Color(0xFF7B8496))),
+        ]),
+      )),
+    );
+  }
+}
+
+class StudentHome extends StatelessWidget {
+  final StudentRecord record;
+  const StudentHome({super.key, required this.record});
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('My Student Profile'), actions: [
+      TextButton.icon(onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const LoginScreen()), (_) => false), icon: const Icon(Icons.logout), label: const Text('Logout')),
+    ]),
+    body: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 850),
+      child: ListView(padding: const EdgeInsets.all(22), children: [
+        StudentDetailCard(record: record),
+        const Text('You can view your own profile here. Admin accounts can access the full student directory.', style: TextStyle(color: Color(0xFF667085))),
+      ]),
+    )),
+  );
+}
+class StudentDetailScreen extends StatelessWidget {
+  final StudentRecord record;
+  const StudentDetailScreen({super.key, required this.record});
+  @override
+  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('Student Details')),
+    body: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 850),
+      child: ListView(padding: const EdgeInsets.all(22), children: [StudentDetailCard(record: record)]))));
+}
+class StudentDetailCard extends StatelessWidget {
+  final StudentRecord record;
+  const StudentDetailCard({super.key, required this.record});
+  @override
+  Widget build(BuildContext context) => Card(child: Padding(padding: const EdgeInsets.all(22),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        const CircleAvatar(radius: 30, backgroundColor: Color(0xFFE9EDFF), child: Icon(Icons.person, color: Color(0xFF4057B2), size: 34)),
+        const SizedBox(width: 14),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(record.name, style: const TextStyle(fontSize: 23, fontWeight: FontWeight.w800)),
+          Text(record.course, style: const TextStyle(color: Color(0xFF667085))),
+        ])),
+        Chip(label: Text('CGPA ' + record.cgpa)),
+      ]),
+      const Divider(height: 30),
+      _StudentDetailLine('Roll number', record.rollNo, Icons.badge_outlined),
+      _StudentDetailLine('Email', record.email, Icons.email_outlined),
+      _StudentDetailLine('Year', record.year, Icons.calendar_today_outlined),
+      _StudentDetailLine('Skills', record.skills, Icons.code),
+      _StudentDetailLine('Projects', record.projects, Icons.folder_open_outlined),
+    ])));
+}
+class _StudentDetailLine extends StatelessWidget {
+  final String label, value;
+  final IconData icon;
+  const _StudentDetailLine(this.label, this.value, this.icon);
+  @override
+  Widget build(BuildContext context) => Padding(padding: const EdgeInsets.symmetric(vertical: 9),
+    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Icon(icon, size: 20, color: const Color(0xFF4057B2)), const SizedBox(width: 12),
+      SizedBox(width: 105, child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700))),
+      Expanded(child: Text(value)),
+    ]));
 }
 
 
