@@ -21,6 +21,7 @@ void main() {
       'asish@student.demo',
     );
     await tester.enterText(find.byType(TextField).at(1), 'student123');
+    await tester.ensureVisible(find.text('Login'));
     await tester.tap(find.text('Login'));
     await tester.pumpAndSettle();
 
