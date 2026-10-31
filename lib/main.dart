@@ -916,7 +916,25 @@ class StudentDetailScreen extends StatelessWidget {
           SizedBox(width:w,child:_AdminPanel(icon:Icons.person_rounded,title:'Personal information',subtitle:'Student identity and contact',child:Column(children:[_AdminRow(label:'Full name',value:record.name,icon:Icons.person_outline_rounded),_AdminRow(label:'Roll number',value:record.rollNo,icon:Icons.confirmation_number_outlined),_AdminRow(label:'Email address',value:record.email,icon:Icons.alternate_email_rounded)]))),
           SizedBox(width:w,child:_AdminPanel(icon:Icons.school_rounded,title:'Academic information',subtitle:'Current course and performance',child:Column(children:[_AdminRow(label:'Programme',value:record.course,icon:Icons.menu_book_rounded),_AdminRow(label:'Academic year',value:record.year,icon:Icons.calendar_today_rounded),_AdminRow(label:'Current CGPA',value:record.cgpa,icon:Icons.grade_rounded)]))),
           SizedBox(width:w,child:_AdminPanel(icon:Icons.auto_awesome_rounded,title:'Skills & technologies',subtitle:'${skills.length} skills listed',child:Wrap(spacing:9,runSpacing:9,children:skills.map((s)=>Container(padding:const EdgeInsets.symmetric(horizontal:13,vertical:9),decoration:BoxDecoration(color:const Color(0xFFF1F3FF),borderRadius:BorderRadius.circular(12),border:Border.all(color:const Color(0xFFE1E6FF))),child:Row(mainAxisSize:MainAxisSize.min,children:[const Icon(Icons.check_circle_rounded,size:15,color:blue),const SizedBox(width:7),Text(s,style:const TextStyle(color:ink,fontWeight:FontWeight.w700,fontSize:12))]))).toList()))),
-          SizedBox(width:w,child:_AdminPanel(icon:Icons.rocket_launch_rounded,title:'Projects & work',subtitle:'${projects.length} projects listed',child:Column(children:projects.map((p)=>Padding(padding:const EdgeInsets.only(bottom:12),child:Row(children:[Container(width:34,height:34,decoration:BoxDecoration(color:const Color(0xFFFFF2E5),borderRadius:BorderRadius.circular(10)),child:const Icon(Icons.folder_open_rounded,color:Color(0xFFB66A22),size:18)),const SizedBox(width:11),Expanded(child:Text(p,style:const TextStyle(color:ink,fontWeight:FontWeight.w700,fontSize:13))),const Icon(Icons.north_east_rounded,size:16,color:Color(0xFF9AA4B5))])).toList()))),
+           SizedBox(
+             width: w,
+             child: _AdminPanel(
+               icon: Icons.rocket_launch_rounded,
+               title: 'Projects & work',
+               subtitle: '${projects.length} projects listed',
+               child: Column(
+                 children: projects.map((p) => Padding(
+                   padding: const EdgeInsets.only(bottom: 12),
+                   child: Row(children: [
+                     Container(width: 34, height: 34, decoration: BoxDecoration(color: const Color(0xFFFFF2E5), borderRadius: BorderRadius.circular(10)), child: const Icon(Icons.folder_open_rounded, color: Color(0xFFB66A22), size: 18)),
+                     const SizedBox(width: 11),
+                     Expanded(child: Text(p, style: const TextStyle(color: ink, fontWeight: FontWeight.w700, fontSize: 13))),
+                     const Icon(Icons.north_east_rounded, size: 16, color: Color(0xFF9AA4B5)),
+                   ]),
+                 )).toList(),
+               ),
+             ),
+           ),
         ]);}),
         const SizedBox(height:22),Container(padding:const EdgeInsets.all(17),decoration:BoxDecoration(color:const Color(0xFFEFF2FF),borderRadius:BorderRadius.circular(17),border:Border.all(color:const Color(0xFFDDE3FF))),child:const Row(children:[Icon(Icons.info_outline_rounded,color:blue),SizedBox(width:12),Expanded(child:Text('Administrator view · This screen displays information available in the current demo student record. Connect a secure database to manage verified student information.',style:TextStyle(color:Color(0xFF46547A),height:1.45,fontSize:12)))])),
         const SizedBox(height:18),Align(alignment:Alignment.centerLeft,child:OutlinedButton.icon(onPressed:()=>Navigator.pop(context),icon:const Icon(Icons.arrow_back_rounded),label:const Text('Back to student directory'),style:OutlinedButton.styleFrom(padding:const EdgeInsets.symmetric(horizontal:18,vertical:15),foregroundColor:blue,side:const BorderSide(color:Color(0xFFD5DCF4))))),
@@ -938,7 +956,17 @@ class _AdminPill extends StatelessWidget {
 }
 class _AdminHeading extends StatelessWidget {
   final String eyebrow,title,subtitle;const _AdminHeading({required this.eyebrow,required this.title,required this.subtitle});
-  @override Widget build(BuildContext context)=>Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(eyebrow,style:const TextStyle(color:Color(0xFF77839A),fontSize:10,fontWeight:FontWeight.w900,letterSpacing:1.3)),const SizedBox(height:5),Text(title,style:const TextStyle(color:Color(0xFF17233D),fontSize:22,fontWeight:FontWeight.w900)),const SizedBox(height:4),Text(subtitle,style:const TextStyle(color:Color(0xFF68758D),fontSize:13)]);
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(eyebrow, style: const TextStyle(color: Color(0xFF77839A), fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.3)),
+      const SizedBox(height: 5),
+      Text(title, style: const TextStyle(color: Color(0xFF17233D), fontSize: 22, fontWeight: FontWeight.w900)),
+      const SizedBox(height: 4),
+      Text(subtitle, style: const TextStyle(color: Color(0xFF68758D), fontSize: 13)),
+    ],
+  );
 }
 class _AdminMetric extends StatelessWidget {
   final double width;final IconData icon;final String label,value,note;final Color tint,accent;
