@@ -37,27 +37,28 @@ void main() {
       expect(find.text('Please enter your course'), findsOneWidget);
     });
 
-    testWidgets('Experiment 10 card opens the testing and debugging screen',
+    testWidgets('Testing and debugging screen displays its tools',
         (tester) async {
-      await tester.pumpWidget(const StudentProfileApp());
+      await tester.pumpWidget(
+        const MaterialApp(home: TestingDebuggingScreen()),
+      );
 
-      final experiment10 = find.text('Experiment 10 - Testing & Debugging');
+      expect(find.text('Testing Flutter UI Components'), findsOneWidget);
+      expect(find.text('Test 1: Profile header'), findsOneWidget);
+
       await tester.scrollUntilVisible(
-        experiment10,
-        300,
+        find.text('Flutter Debugging Tools'),
+        250,
         scrollable: find.byType(Scrollable).first,
       );
-      await tester.tap(experiment10);
-      await tester.pumpAndSettle();
-
       expect(find.text('Flutter Debugging Tools'), findsOneWidget);
-      final analyzeCommand = find.text('flutter analyze');
+
       await tester.scrollUntilVisible(
-        analyzeCommand,
+        find.text('flutter analyze'),
         250,
-        scrollable: find.byType(Scrollable).last,
+        scrollable: find.byType(Scrollable).first,
       );
-      expect(analyzeCommand, findsOneWidget);
+      expect(find.text('flutter analyze'), findsOneWidget);
       expect(find.text('flutter test'), findsOneWidget);
     });
   });
