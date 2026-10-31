@@ -59,6 +59,12 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
       expect(find.text('flutter analyze'), findsOneWidget);
+
+      await tester.scrollUntilVisible(
+        find.text('flutter test'),
+        180,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('flutter test'), findsOneWidget);
     });
   });
